@@ -11,7 +11,7 @@ namespace Lindan\Utils\Format;
  * @author AxiaCore S.A.S
  * tomado de:https://github.com/arielcr/numero-a-letras
  * 
- * https://www.universia.es/estudiar-extranjero/mexico/salir/moneda/4293
+ 
  */
 class NumeroALetras
 {
@@ -78,7 +78,7 @@ class NumeroALetras
      * @param scalar $number
      * @param string $moneda example 'PESOS','EUROS' ,etc
      * @param string $centimos CENTAVOS  (util cuando centavos es en LETRA. ignorado cuando la parte fracional es en ##/##)
-     * @param boolean $forzarCentimos (util cunado centavos es en LETRA)
+     * @param boolean $forzarCentimos "con {#centimos} " para el caso de formato letra y ##/00 para el caso de decimal con numero
      * @param boolean $centimosEnLetra Si es true, se usara el valor de centimos, en caso contrario se usara el formato centecimos/100 
      * @param string $claveMoneda usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna)
      * @return void
