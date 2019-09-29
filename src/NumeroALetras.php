@@ -93,7 +93,7 @@ class NumeroALetras
      * @param string $claveMoneda usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna)
      * @return void
      */
-    public static function convertir($number,string $moneda = '',string $centimos = '', $forzarCentimos = false,bool $centimosEnLetra=false,string $claveMoneda='M.N')
+    public static function convertir($number,string $moneda = '',string $centimos = '', bool $forzarCentimos = false,bool $centimosEnLetra=false,string $claveMoneda='M.N')
     {
        # echo $number."\n";
         $converted = '';
@@ -143,9 +143,14 @@ class NumeroALetras
             $number = $div_decimales[0];
             $decNumberStr = (string) $div_decimales[1];
             if(strlen($decNumberStr) == 2){
+               
                 $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
                 $decCientos = substr($decNumberStrFill, 6);
                 $decimales = self::convertGroup($decCientos);
+            }else{
+                throw new \InvalidArgumentException(
+                    "Parte fracional invalida :{$decNumberStr}, verifica el numero de decimales o si el symbolo de moneda va al final y es correcto"
+                );
             }
         }#
         else if (count($div_decimales) == 1 && $forzarCentimos){
@@ -217,7 +222,7 @@ class NumeroALetras
             if($centimosEnLetra){
             $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
             }else{
-                $valor_convertido = $converted . strtoupper($moneda) . '  ' . $decNumberStr . '/100 '.$claveMoneda; #m.n = moneda nacional 
+                $valor_convertido = $converted . strtoupper($moneda) . ' ' . $decNumberStr . '/100 '.$claveMoneda; #m.n = moneda nacional 
             }
         }
         return $menos.$valor_convertido;
