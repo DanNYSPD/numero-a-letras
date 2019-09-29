@@ -65,11 +65,13 @@ class NumeroALetras
     public static $decimapSeparator='.';
     /**
      * Este atributo es util para el caso de valores currency con su simbolo , ejemplo $124.00 , € 123.00, etc.
-     * Por defecto es $, setea este valor al deseado
+     * Por defecto es $, setea este valor al deseado.
+     * Aunque poco comun, tambien es posible encontrar valore como "Eu 1234,56","USD 1,234.56" ,"GBP 1,234.56" (ejemplos de valores tomandos de https://www.php.net/manual/es/function.money-format.php),
+     * por lo que si tambien se desean omitir estos valores (se debe conocer el valor), colocar este como currencySymbol (aunque sea mas de un caracter)
      *
      * @var string
      */
-    public static $currencySymbol='$'; //it can be €
+    public static $currencySymbol='$'; //it can be €, USD,MXN
     /**
      * 
      *
@@ -88,12 +90,24 @@ class NumeroALetras
         if (($number < 0) || ($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
         }
+        $number=trim($number);
+        #me aseguro de que el symbolo sea el mismo por eso convierto todo a upper case (por ejemplo usd y USD no machearian sino hago esto)
+        $lcurrencySymbol=strlen(self::$currencySymbol);
+        $part=substr($number,0,$lcurrencySymbol);
+        #echo $part."\n";
+        if(strcasecmp($part,self::$currencySymbol)==0){ #this means it has the symbol o money type at the beggining
+            $number= trim(substr($number,$lcurrencySymbol,strlen($number)-$lcurrencySymbol));
+          #  echo $number."\n";
+        }else{
+           # echo $number."\n";
+        }
+
+        /*
         if($number[0]==self::$currencySymbol){
             #I trimmed the string because is common that a whitespace is between the currency symbol and the numeric part, for example: $ 1,212.0
            $number= trim(substr($number,1,strlen($number)-1));
-
         }
-
+        */
         $div_decimales = explode(self::$decimapSeparator,$number);
         $decNumberStr='00';
         if(count($div_decimales) > 1){
