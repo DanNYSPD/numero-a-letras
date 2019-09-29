@@ -98,9 +98,11 @@ class NumeroALetras
        # echo $number."\n";
         $converted = '';
         $decimales = '';
-        if (($number < 0) || ($number > 999999999)) {
+        /*
+        if (($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
         }
+        */
         $number=trim($number);
 
         if(self::$smartSymbolDetection===true){
@@ -126,6 +128,8 @@ class NumeroALetras
            }
 
         }
+
+    
 
         /*
         if($number[0]==self::$currencySymbol){
@@ -160,7 +164,11 @@ class NumeroALetras
         
         $menos=''; #contendra la palabra menos en caso de valores negativos
 
+        if(strpos($numberStr,self::$minusSymbol)!==false){
+            $menos ="MENOS ";
+            $numberStr=str_replace(self::$minusSymbol,'',$numberStr);
 
+        }
         #en caso de que tenga separadores de miles los remuevo:
         $numberStr=str_replace(self::$thousandSeparator,'',$numberStr);
        # echo $numberStr."-----------------\n";
@@ -212,7 +220,7 @@ class NumeroALetras
                 $valor_convertido = $converted . strtoupper($moneda) . '  ' . $decNumberStr . '/100 '.$claveMoneda; #m.n = moneda nacional 
             }
         }
-        return $valor_convertido;
+        return $menos.$valor_convertido;
     }
     private static function convertGroup(string $n)
     {
