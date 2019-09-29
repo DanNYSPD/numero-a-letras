@@ -60,6 +60,11 @@ class NumeroALetras
         'OCHOCIENTOS ',
         'NOVECIENTOS '
     ];
+
+    public static $thousandSeparator=',';
+    public static $decimapSeparator='.';
+
+
     /**
      * 
      *
@@ -78,7 +83,9 @@ class NumeroALetras
         if (($number < 0) || ($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
         }
-        $div_decimales = explode('.',$number);
+        
+
+        $div_decimales = explode(self::$decimapSeparator,$number);
         $decNumberStr='00';
         if(count($div_decimales) > 1){
             $number = $div_decimales[0];
@@ -103,6 +110,9 @@ class NumeroALetras
         $numberStr = (string) $number;
         //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
         //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
+
+        #en caso de que tenga separadores de miles los remuevo:
+        $numberStr=str_replace(self::$thousandSeparator,'',$numberStr);
         
         $numberStrFill = str_pad($numberStr, 9, '0', STR_PAD_LEFT);
         $millones = substr($numberStrFill, 0, 3);
