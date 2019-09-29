@@ -1,4 +1,5 @@
 <?php
+namespace Lindan\Utils\Format;
 /**
  * Clase que implementa un coversor de números
  * a letras.
@@ -8,9 +9,10 @@
  * con la función array.
  *
  * @author AxiaCore S.A.S
- *
+ * tomado de:https://github.com/arielcr/numero-a-letras
+ * 
+ * https://www.universia.es/estudiar-extranjero/mexico/salir/moneda/4293
  */
-
 class NumeroALetras
 {
     private static $UNIDADES = [
@@ -36,7 +38,6 @@ class NumeroALetras
         'DIECINUEVE ',
         'VEINTE '
     ];
-
     private static $DECENAS = [
         'VENTI',
         'TREINTA ',
@@ -48,7 +49,6 @@ class NumeroALetras
         'NOVENTA ',
         'CIEN '
     ];
-
     private static $CENTENAS = [
         'CIENTO ',
         'DOSCIENTOS ',
@@ -60,18 +60,26 @@ class NumeroALetras
         'OCHOCIENTOS ',
         'NOVECIENTOS '
     ];
-
-    public static function convertir($number, $moneda = '', $centimos = '', $forzarCentimos = false)
+    /**
+     * 
+     *
+     * @param scalar $number
+     * @param string $moneda example 'PESOS','EUROS' ,etc
+     * @param string $centimos CENTAVOS  (util cuando centavos es en LETRA. ignorado cuando la parte fracional es en ##/##)
+     * @param boolean $forzarCentimos (util cunado centavos es en LETRA)
+     * @param boolean $centimosEnLetra Si es true, se usara el valor de centimos, en caso contrario se usara el formato centecimos/100 
+     * @param string $claveMoneda usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna)
+     * @return void
+     */
+    public static function convertir($number,string $moneda = '',string $centimos = '', $forzarCentimos = false,bool $centimosEnLetra=false,string $claveMoneda='M.N')
     {
         $converted = '';
         $decimales = '';
-
         if (($number < 0) || ($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
         }
-
         $div_decimales = explode('.',$number);
-
+        $decNumberStr='00';
         if(count($div_decimales) > 1){
             $number = $div_decimales[0];
             $decNumberStr = (string) $div_decimales[1];
@@ -80,17 +88,26 @@ class NumeroALetras
                 $decCientos = substr($decNumberStrFill, 6);
                 $decimales = self::convertGroup($decCientos);
             }
-        }
+        }#
         else if (count($div_decimales) == 1 && $forzarCentimos){
             $decimales = 'CERO ';
-        }
 
+        }
+        /*
+        if(0==$number){//si es cero y no tirnen decimales
+            $converted= "CERO ";
+
+
+        }
+        */
         $numberStr = (string) $number;
+        //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
+        //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
+        
         $numberStrFill = str_pad($numberStr, 9, '0', STR_PAD_LEFT);
         $millones = substr($numberStrFill, 0, 3);
         $miles = substr($numberStrFill, 3, 3);
         $cientos = substr($numberStrFill, 6);
-
         if (intval($millones) > 0) {
             if ($millones == '001') {
                 $converted .= 'UN MILLON ';
@@ -98,7 +115,6 @@ class NumeroALetras
                 $converted .= sprintf('%sMILLONES ', self::convertGroup($millones));
             }
         }
-
         if (intval($miles) > 0) {
             if ($miles == '001') {
                 $converted .= 'MIL ';
@@ -106,36 +122,38 @@ class NumeroALetras
                 $converted .= sprintf('%sMIL ', self::convertGroup($miles));
             }
         }
-
         if (intval($cientos) > 0) {
+            
             if ($cientos == '001') {
                 $converted .= 'UN ';
             } else if (intval($cientos) > 0) {
                 $converted .= sprintf('%s ', self::convertGroup($cientos));
             }
+        }else{ //este es el ultimo cero, y si representa un valor en texto
+            if($cientos=='000'){
+                $converted .= 'CERO ';
+            }
         }
-
         if(empty($decimales)){
             $valor_convertido = $converted . strtoupper($moneda);
         } else {
+            if($centimosEnLetra){
             $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
+            }else{
+                $valor_convertido = $converted . strtoupper($moneda) . '  ' . $decNumberStr . '/100 '.$claveMoneda; #m.n = moneda nacional 
+            }
         }
-
         return $valor_convertido;
     }
-
-    private static function convertGroup($n)
+    private static function convertGroup(string $n)
     {
         $output = '';
-
         if ($n == '100') {
             $output = "CIEN ";
         } else if ($n[0] !== '0') {
             $output = self::$CENTENAS[$n[0] - 1];
         }
-
         $k = intval(substr($n,1));
-
         if ($k <= 20) {
             $output .= self::$UNIDADES[$k];
         } else {
@@ -145,7 +163,6 @@ class NumeroALetras
                 $output .= sprintf('%s%s', self::$DECENAS[intval($n[1]) - 2], self::$UNIDADES[intval($n[2])]);
             }
         }
-
         return $output;
     }
 }
