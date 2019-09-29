@@ -81,6 +81,7 @@ class NumeroALetras
     public static $smartSymbolDetection=false;
 
     public static $minusSymbol='-';
+    public static $supportForNegativeValues=true;
     /**
      * 
      *
@@ -94,6 +95,7 @@ class NumeroALetras
      */
     public static function convertir($number,string $moneda = '',string $centimos = '', $forzarCentimos = false,bool $centimosEnLetra=false,string $claveMoneda='M.N')
     {
+       # echo $number."\n";
         $converted = '';
         $decimales = '';
         if (($number < 0) || ($number > 999999999)) {
@@ -146,6 +148,7 @@ class NumeroALetras
             $decimales = 'CERO ';
 
         }
+      #  echo $number."-----------------\n";
         /*
         if(0==$number){//si es cero y no tirnen decimales
             $converted= "CERO ";
@@ -154,12 +157,22 @@ class NumeroALetras
         }
         */
         $numberStr = (string) $number;
-        //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
-        //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
+        
+        $menos=''; #contendra la palabra menos en caso de valores negativos
+
 
         #en caso de que tenga separadores de miles los remuevo:
         $numberStr=str_replace(self::$thousandSeparator,'',$numberStr);
-        
+       # echo $numberStr."-----------------\n";
+        # con esto me aseguro que tras procesar la cantidad no se exceda y no ocurra Undefined offset: -1 dentro del metodo convertGroup
+        if(intval($numberStr)>999999999){
+            throw new \InvalidArgumentException(
+            "No se puede formatear mas alla de la suma 999999999, valor dado(limpio sin symbolos): {$numberStr}. 
+            Si el valor no exede la suma indica, favor de verificar la configuracion de separador decimal y de miles", 1);
+            
+        }
+        //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
+        //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
         $numberStrFill = str_pad($numberStr, 9, '0', STR_PAD_LEFT);
         $millones = substr($numberStrFill, 0, 3);
         $miles = substr($numberStrFill, 3, 3);
