@@ -63,8 +63,13 @@ class NumeroALetras
 
     public static $thousandSeparator=',';
     public static $decimapSeparator='.';
-
-
+    /**
+     * Este atributo es util para el caso de valores currency con su simbolo , ejemplo $124.00 , € 123.00, etc.
+     * Por defecto es $, setea este valor al deseado
+     *
+     * @var string
+     */
+    public static $currencySymbol='$'; //it can be €
     /**
      * 
      *
@@ -83,7 +88,11 @@ class NumeroALetras
         if (($number < 0) || ($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
         }
-        
+        if($number[0]==self::$currencySymbol){
+            #I trimmed the string because is common that a whitespace is between the currency symbol and the numeric part, for example: $ 1,212.0
+           $number= trim(substr($number,1,strlen($number)-1));
+
+        }
 
         $div_decimales = explode(self::$decimapSeparator,$number);
         $decNumberStr='00';
