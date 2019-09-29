@@ -73,6 +73,15 @@ class NumeroALetras
      */
     public static $currencySymbol='$'; //it can be €, USD,MXN
     /**
+     * La intencion de este atributo es detectar si hay un currencySymbol (usualmente un caracter o un currencyCode).
+     * Este atributo reduciria el performance.Sin embargo permitira formatear valores como 1,000.00 , $1,00.00 o USD 1,000.00 sin indicar el symbolo
+     *
+     * @var boolean
+     */
+    public static $smartSymbolDetection=false;
+
+    public static $minusSymbol='-';
+    /**
      * 
      *
      * @param scalar $number
@@ -91,15 +100,29 @@ class NumeroALetras
             return 'No es posible convertir el numero a letras';
         }
         $number=trim($number);
+
+        if(self::$smartSymbolDetection===true){
+
+        }
         #me aseguro de que el symbolo sea el mismo por eso convierto todo a upper case (por ejemplo usd y USD no machearian sino hago esto)
         $lcurrencySymbol=strlen(self::$currencySymbol);
-        $part=substr($number,0,$lcurrencySymbol);
+        $beginning=substr($number,0,$lcurrencySymbol);
+       
         #echo $part."\n";
-        if(strcasecmp($part,self::$currencySymbol)==0){ #this means it has the symbol o money type at the beggining
+        if(strcasecmp($beginning,self::$currencySymbol)==0){ #this means it has the symbol o money type at the beggining
             $number= trim(substr($number,$lcurrencySymbol,strlen($number)-$lcurrencySymbol));
           #  echo $number."\n";
         }else{
-           # echo $number."\n";
+            
+           $end=substr($number,strlen($number)-$lcurrencySymbol,$lcurrencySymbol);
+           #en algunos locale, el currentSymbol va al final,como "12.345,67 €", por ello considero este escenario
+            
+           if(strcasecmp($end,self::$currencySymbol)==0){
+               
+                $number= trim(substr($number,0,strlen($number)-$lcurrencySymbol));
+               
+           }
+
         }
 
         /*
