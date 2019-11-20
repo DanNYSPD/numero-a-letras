@@ -2,7 +2,7 @@
   "name": "xarenisoft/numbertowords-esp",
   "description": "Convierte un número a su valor correspondiente en letras.",
   "keywords": ["convertir", "numero", "letras"],
-  "homepage": "https://github.com/arielcr/numero-a-letras",
+  "homepage": "https://github.com/DanNYSPD/numero-a-letras",
   "license" : "MIT",
   "authors" : [
     {
