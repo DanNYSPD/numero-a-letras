@@ -9,6 +9,12 @@ final class PrimaTest extends TestCase {
     public function setup(){
         
     }
+    public function testIntegerWithourThousandSeparator(){
+       $number=12345;
+      $output= NumeroALetras::convertir($number);
+      $this->assertEquals('DOCE MIL TRESCIENTOS CUARENTA Y CINCO',
+      $output);
+    }
     public function testCantidadConSeparadorComaDecimalPuntoMonedaPesosYCentimosVacioDemo(){
         $output= NumeroALetras::convertir("121,311,321.21",'PESOS','','',NumeroALetras::FORZAR_CENTIMOS|NumeroALetras::SUFFIX_SIEMPRE);
         $this->assertEquals('CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100',
@@ -81,7 +87,7 @@ final class PrimaTest extends TestCase {
          NumeroALetras::$decimalSeparator='.';
          NumeroALetras::$thousandSeparator='.';
          $output= NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
-         $expected="MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN  PESOS";         
+         
          
      }
      public function testValorNegativoConSimboloMasDeUnCaracter(){
