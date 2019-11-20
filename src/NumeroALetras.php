@@ -86,6 +86,7 @@ class NumeroALetras
 
     public const FORZAR_CENTIMOS=1; // BIT #1 
     public const SUFFIX_SIEMPRE=2; // BIT #2 
+    public const USE_LOCAL=4; // BIT #2 
     static function isFlagSet($flag,$globalFlags)
     {
         return (($globalFlags & $flag) == $flag);
@@ -95,6 +96,9 @@ class NumeroALetras
     }
     static function isSetFlagSuffixAlways($globalFlags){
         return self::isFlagSet(self::SUFFIX_SIEMPRE,$globalFlags);
+    }
+    static function isSetFlagUseLocal($globalFlags){
+        return self::isFlagSet(self::USE_LOCAL,$globalFlags);
     }
     /**
      * 
@@ -109,10 +113,42 @@ class NumeroALetras
     {
         $forzarCentimos=self::isSetFlagForceCentimos($flags);
         $suffixAlwaysAtTheEnd=self::isSetFlagSuffixAlways($flags);
+        $useLocal=self::isSetFlagUseLocal($flags);
        # echo $number."\n";
         $converted = '';
         $decimales = '';
+        if(true===$useLocal){
+            $local=localeconv();
+            $decimalSeparator =$local['decimal_point'];
+            $thousandSeparator=$local['thousands_sep'];
+            //I have test it and localeconv sometimes return empty in thousands_sep, so I gonna try to resolve thousand
+            if(empty($thousandSeparator)&&!empty($decimalSeparator)){
+                //as we know what decimal separator is, we can infer the thousand
+                if($decimalSeparator==='.'){
+                    //if it decimal separator is a point, usually a comma is used as thousand separator
+                    if(strpos($number,',')!==false){
+                        $thousandSeparator=',';
+                    }else{
+                        //is posible that the number doesn't have a thousand separator(when is a number, not a numeric string)
+                        //so I leave it pass
+                        /*
+                        if (strpos($number, '.')!==false) {
 
+                        }
+                    
+                        if(preg_match("/[0-9]".$decimalSeparator."?[0-9]/",$number)===1){
+                            
+                        }else{
+                            //there is an extra symbol
+                        }
+                        */
+                    }
+                }
+            }
+            self::$decimalSeparator=$decimalSeparator;
+            self::$thousandSeparator=$thousandSeparator;
+
+        }
         if(self::$decimalSeparator==self::$thousandSeparator){
             $separatorValue=self::$decimalSeparator;
             throw new \InvalidArgumentException(
