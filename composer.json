@@ -1,22 +1,24 @@
 {
-  "name": "arielcr/numero-a-letras",
+  "name": "xarenisoft/numbertowords-esp",
   "description": "Convierte un número a su valor correspondiente en letras.",
   "keywords": ["convertir", "numero", "letras"],
   "homepage": "https://github.com/arielcr/numero-a-letras",
   "license" : "MIT",
   "authors" : [
     {
-      "name": "Ariel Orozco",
-      "email": "bassplayer85@gmail.com",
-      "homepage": "http://arielorozco.com"
+      "name": "Daniel",
+      "email": "daniel.hernandez.job@gmail.com"      
     }
   ],
   "require": {
     "php": ">=5.4"
   },
   "autoload": {
-    "psr-0": {
-      "NumeroALetras": "src/"
+    "psr-4": {
+      "Xarenisoft\\NumberToWords\\Esp\\": "src/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
   }
 }
