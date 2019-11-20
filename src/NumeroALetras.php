@@ -103,9 +103,9 @@ class NumeroALetras
      * @param string $moneda example 'PESOS','EUROS' ,etc
      * @param string $centimos CENTAVOS, Cuando es un valor vacio(cadena vacia)  se asigna el formato ##/100 en caso contrario centimos sera en palabra, e.j:centavos    
      * @param string $suffix usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna), si se desea usar siempre este suffix establece la bandera SUFFIX_SIEMPRE
-     * @return void
+     * @return string
      */
-    public static  function convertir($number,string $moneda = '',string $centimos = '',string $suffix='', int $flags = 0)
+    public static  function convertir($number,string $moneda = '',string $centimos = '',string $suffix='', int $flags = 0):string
     {
         $forzarCentimos=self::isSetFlagForceCentimos($flags);
         $suffixAlwaysAtTheEnd=self::isSetFlagSuffixAlways($flags);
