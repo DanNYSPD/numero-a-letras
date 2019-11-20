@@ -31,6 +31,7 @@ banderas para cambiar el comportamiento del metodo
 
 ## Uso
 ```php
+use Xarenisoft\NumberToWords\Esp\NumeroALetras;
 $letras = NumeroALetras::convertir(12345);
 //Tambien es posible recibir cadenas numericas
 
