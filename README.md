@@ -55,8 +55,18 @@ NumeroALetras::$currencySymbol='MXN';
 echo NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
 //MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS
 ```
-       
+Configurando metodo con flags:
 
+```php
+//forzando representar centimos cuando es cero:
+NumeroALetras::convertir("121,311,321.0",'PESOS','','M.N.',NumeroALetras::FORZAR_CENTIMOS);
+//CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 00/100 M.N.
+
+//forzando usar sufijo a pesar de que el formato es CENTAVOS
+NumeroALetras::convertir("121,311,321.21",'PESOS','CENTAVOS','MXN',NumeroALetras::FORZAR_CENTIMOS|NumeroALetras::SUFFIX_SIEMPRE);
+//CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS MXN',
+
+```
 ##Excepciones
 La excepcion InvalidArgumentException es arrojada si el numero/cadena numerica excede los centenares de millon 
 
