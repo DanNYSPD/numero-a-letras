@@ -63,7 +63,7 @@ class NumeroALetras
     ];
 
     public static $thousandSeparator=',';
-    public static $decimapSeparator='.';
+    public static $decimalSeparator='.';
     /**
      * Este atributo es util para el caso de valores currency con su simbolo , ejemplo $124.00 , € 123.00, etc.
      * Por defecto es $, setea este valor al deseado.
@@ -142,7 +142,7 @@ class NumeroALetras
            }
 
         }
-        $div_decimales = explode(self::$decimapSeparator,$number);
+        $div_decimales = explode(self::$decimalSeparator,$number);
         $decNumberStr='00';
         if(count($div_decimales) > 1){
             $number = $div_decimales[0];
