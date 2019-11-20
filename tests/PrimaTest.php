@@ -50,6 +50,11 @@ final class PrimaTest extends TestCase {
         $this->assertEquals('CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS M.N.',
         $output);
      }
+     public function testCantidadConSeparadorComaDecimalPuntoMonedaPesosYCentimosConbitwiseEnFlags(){
+      $output= NumeroALetras::convertir("121,311,321.21",'PESOS','CENTAVOS','MXN',NumeroALetras::FORZAR_CENTIMOS|NumeroALetras::SUFFIX_SIEMPRE);
+      $this->assertEquals('CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS MXN',
+      $output);
+   }
      public function testUsandoConfiguracionDeMoneda(){
          NumeroALetras::$currencySymbol='€';
 		   NumeroALetras::$thousandSeparator='.';
@@ -79,4 +84,6 @@ final class PrimaTest extends TestCase {
          $this->assertEquals($expected,$output); 		 
          
      }
+     
+    
 }
