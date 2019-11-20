@@ -50,4 +50,33 @@ final class PrimaTest extends TestCase {
         $this->assertEquals('CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS M.N.',
         $output);
      }
+     public function testUsandoConfiguracionDeMoneda(){
+         NumeroALetras::$currencySymbol='€';
+		   NumeroALetras::$thousandSeparator='.';
+		   NumeroALetras::$decimalSeparator=',';
+         $output=NumeroALetras::convertir("12.345,67 €",'EUROS','','EUR');
+         $this->assertEquals("DOCE MIL TRESCIENTOS CUARENTA Y CINCO EUROS 67/100 EUR",$output); 		 
+     }
+     /**
+      * @expectedException InvalidArgumentException
+      *
+      * 
+      */
+     public function testMismoSeparadorException(){
+         NumeroALetras::$currencySymbol='MXN';
+         NumeroALetras::$decimalSeparator='.';
+         NumeroALetras::$thousandSeparator='.';
+         $output= NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
+         $expected="MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN  PESOS";         
+         
+     }
+     public function testValorNegativoConSimboloMasDeUnCaracter(){
+         NumeroALetras::$currencySymbol='MXN';
+         NumeroALetras::$decimalSeparator='.';
+         NumeroALetras::$thousandSeparator=',';
+         $output= NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
+         $expected="MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS";         
+         $this->assertEquals($expected,$output); 		 
+         
+     }
 }

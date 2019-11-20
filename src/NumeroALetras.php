@@ -112,6 +112,13 @@ class NumeroALetras
        # echo $number."\n";
         $converted = '';
         $decimales = '';
+
+        if(self::$decimalSeparator==self::$thousandSeparator){
+            $separatorValue=self::$decimalSeparator;
+            throw new \InvalidArgumentException(
+                "Configura correctamente ambos valores, separador decimal y de miles no debe ser igual: valor de ambos <{$separatorValue}>"
+            );
+        }
         /*
         if (($number > 999999999)) {
             return 'No es posible convertir el numero a letras';
