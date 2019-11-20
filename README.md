@@ -5,16 +5,18 @@ Es un fork de
 
 ## Instalación
 
-Agrega `arielcr/numero-a-letras` a tu archivo composer.json.
-
+Agrega `xarenisoft/numbertowords-esp` a tu archivo composer.json.
+```json
     {
         "require": {
-            "arielcr/numero-a-letras": "dev-master"
+            "xarenisoft/numbertowords-esp": "1.0.0"
         }
     }
+```    
 ## firma del metodo:
-		convertir(string $number,string $moneda = '',string $centimos = '',string $suffix='', int $flags = 0):string
-
+```php
+convertir(string $number,string $moneda = '',string $centimos = '',string $suffix='', int $flags = 0):string
+```
 ## Parametros
 #### number. 
 Numero o cadena numerica a convertir en palabras
@@ -28,31 +30,31 @@ Sufijo , por defecto se agrega al final de la cadena solo cuando el formato es #
 banderas para cambiar el comportamiento del metodo        
 
 ## Uso
+```php
+$letras = NumeroALetras::convertir(12345);
+//Tambien es posible recibir cadenas numericas
 
-        $letras = NumeroALetras::convertir(12345);
-Tambien es posible recibir cadenas numericas
-
-         echo  NumeroALetras::convertir("121,311,321.21",'PESOS','CENTAVOS');
-         >CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
-         echo NumeroALetras::convertir("$ 121,311,321.21",'PESOS','CENTAVOS');
-         >CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
-         echo NumeroALetras::convertir("$-12131321.21",'PESOS','CENTAVOS');
-         >MENOS CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
-        
+echo  NumeroALetras::convertir("121,311,321.21",'PESOS','CENTAVOS');
+//CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
+echo NumeroALetras::convertir("$ 121,311,321.21",'PESOS','CENTAVOS');
+//CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
+echo NumeroALetras::convertir("$-12131321.21",'PESOS','CENTAVOS');
+//MENOS CIENTO VENTIUN MILLONES TRESCIENTOS ONCE MIL TRESCIENTOS VENTIUN PESOS 21/100
+```        
 Ademas de elegir los separadores y simbolo de moneda:
-
-	NumeroALetras::$currencySymbol='€';
-	NumeroALetras::$thousandSeparator='.';
-	NumeroALetras::$decimalSeparator=',';
-    $output=NumeroALetras::convertir("12.345,67 €",'EUROS','','EUR');
- 	echo NumeroALetras::convertir("12.345,67 €",'','CENTAVOS',false,false,'EUR');
- 		> DOCE MIL TRESCIENTOS CUARENTA Y CINCO EUROS 67/100 EUR
-
+```php
+NumeroALetras::$currencySymbol='€';
+NumeroALetras::$thousandSeparator='.';
+NumeroALetras::$decimalSeparator=',';
+echo NumeroALetras::convertir("12.345,67 €",'EUROS','','EUR');
+//DOCE MIL TRESCIENTOS CUARENTA Y CINCO EUROS 67/100 EUR
+```
 Incluso haciendo uso de currencySymbol, se puede aceptar el siguiente formato:
-		NumeroALetras::$currencySymbol='MXN';
- 		echo NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
- 		>MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS
-
+```php
+NumeroALetras::$currencySymbol='MXN';
+echo NumeroALetras::convertir("-12131321.21 MXN",'PESOS','CENTAVOS');
+//MENOS DOCE MILLONES CIENTO TREINTA Y UN MIL TRESCIENTOS VENTIUN PESOS CON VENTIUN CENTAVOS
+```
        
 
 ##Excepciones
