@@ -160,7 +160,7 @@ class NumeroALetras
             return 'No es posible convertir el numero a letras';
         }
         */
-        $number=trim($number);
+        $number=trim((string)$number);
 
         if(self::$smartSymbolDetection===true){
 
