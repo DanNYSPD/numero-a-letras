@@ -1,5 +1,6 @@
 <?php
-namespace Lindan\Utils\Format;
+declare(strict_types=1);
+namespace Xarenisoft\NumberToWords\Esp;
 /**
  * Clase que implementa un coversor de números
  * a letras.
@@ -82,19 +83,32 @@ class NumeroALetras
 
     public static $minusSymbol='-';
     public static $supportForNegativeValues=true;
+
+    public const FORZAR_CENTIMOS=1; // BIT #1 
+    public const SUFFIX_SIEMPRE=2; // BIT #2 
+    static function isFlagSet($flag,$globalFlags)
+    {
+        return (($globalFlags & $flag) == $flag);
+    }
+    static function isSetFlagForceCentimos($globalFlags){
+        return self::isFlagSet(self::FORZAR_CENTIMOS,$globalFlags);
+    }
+    static function isSetFlagSuffixAlways($globalFlags){
+        return self::isFlagSet(self::SUFFIX_SIEMPRE,$globalFlags);
+    }
     /**
      * 
      *
      * @param scalar $number
      * @param string $moneda example 'PESOS','EUROS' ,etc
-     * @param string $centimos CENTAVOS  (util cuando centavos es en LETRA. ignorado cuando la parte fracional es en ##/##)
-     * @param boolean $forzarCentimos "con {#centimos} " para el caso de formato letra y ##/00 para el caso de decimal con numero
-     * @param boolean $centimosEnLetra Si es true, se usara el valor de centimos, en caso contrario se usara el formato centecimos/100 
-     * @param string $claveMoneda usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna)
+     * @param string $centimos CENTAVOS, Cuando es un valor vacio(cadena vacia)  se asigna el formato ##/100 en caso contrario centimos sera en palabra, e.j:centavos    
+     * @param string $suffix usado cuando el formato es centecimos/100, va al final y puede expresar el tipo de moneda (M.N o alguna), si se desea usar siempre este suffix establece la bandera SUFFIX_SIEMPRE
      * @return void
      */
-    public static function convertir($number,string $moneda = '',string $centimos = '', bool $forzarCentimos = false,bool $centimosEnLetra=false,string $claveMoneda='M.N')
+    public static  function convertir($number,string $moneda = '',string $centimos = '',string $suffix='', int $flags = 0)
     {
+        $forzarCentimos=self::isSetFlagForceCentimos($flags);
+        $suffixAlwaysAtTheEnd=self::isSetFlagSuffixAlways($flags);
        # echo $number."\n";
         $converted = '';
         $decimales = '';
@@ -128,25 +142,21 @@ class NumeroALetras
            }
 
         }
-
-    
-
-        /*
-        if($number[0]==self::$currencySymbol){
-            #I trimmed the string because is common that a whitespace is between the currency symbol and the numeric part, for example: $ 1,212.0
-           $number= trim(substr($number,1,strlen($number)-1));
-        }
-        */
         $div_decimales = explode(self::$decimapSeparator,$number);
         $decNumberStr='00';
         if(count($div_decimales) > 1){
             $number = $div_decimales[0];
             $decNumberStr = (string) $div_decimales[1];
-            if(strlen($decNumberStr) == 2){
-               
-                $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
-                $decCientos = substr($decNumberStrFill, 6);
-                $decimales = self::convertGroup($decCientos);
+            if(strlen($decNumberStr) <= 2){
+                # I did this cast because convertGroup doesn't resolve when it's 0
+                if((int)$decNumberStr===0 && $forzarCentimos){
+                    $decimales='CERO';
+                    $decNumberStr='00';
+                }else{               
+                    $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
+                    $decCientos = substr($decNumberStrFill, 6);
+                    $decimales = self::convertGroup($decCientos);
+                }
             }else{
                 throw new \InvalidArgumentException(
                     "Parte fracional invalida :{$decNumberStr}, verifica el numero de decimales o si el symbolo de moneda va al final y es correcto"
@@ -209,23 +219,29 @@ class NumeroALetras
             if ($cientos == '001') {
                 $converted .= 'UN ';
             } else if (intval($cientos) > 0) {
-                $converted .= sprintf('%s ', self::convertGroup($cientos));
+                $converted .= sprintf('%s', self::convertGroup($cientos));
             }
         }else{ //este es el ultimo cero, y si representa un valor en texto
             if($cientos=='000'){
                 $converted .= 'CERO ';
             }
         }
-        if(empty($decimales)){
+        if(""===$decimales){
             $valor_convertido = $converted . strtoupper($moneda);
+            if($suffixAlwaysAtTheEnd && !empty($suffix)){
+                $valor_convertido.=" ".$suffix;
+            }
         } else {
-            if($centimosEnLetra){
-            $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
+            if(!empty($centimos)){
+                $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . trim($decimales) . ' ' . strtoupper($centimos);
+                if($suffixAlwaysAtTheEnd && !empty($suffix)){
+                    $valor_convertido.=" ".$suffix;
+                }
             }else{
-                $valor_convertido = $converted . strtoupper($moneda) . ' ' . $decNumberStr . '/100 '.$claveMoneda; #m.n = moneda nacional 
+                $valor_convertido = $converted . strtoupper($moneda) . ' ' . $decNumberStr . '/100 '.$suffix; #m.n = moneda nacional 
             }
         }
-        return $menos.$valor_convertido;
+        return trim($menos.$valor_convertido);
     }
     private static function convertGroup(string $n)
     {
