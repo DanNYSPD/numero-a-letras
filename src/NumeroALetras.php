@@ -11,8 +11,7 @@ namespace Xarenisoft\NumberToWords\Esp;
  *
  * @author AxiaCore S.A.S
  * tomado de:https://github.com/arielcr/numero-a-letras
- * 
- 
+ *
  */
 class NumeroALetras
 {
@@ -83,6 +82,12 @@ class NumeroALetras
 
     public static $minusSymbol='-';
     public static $supportForNegativeValues=true;
+    /**
+     * Deshabilita la terminación escrita 'CERO' cuando  un numero termina en 000
+     *
+     * @var boolean
+     */
+    public static $disableCeros=true;
 
     public const FORZAR_CENTIMOS=1; // BIT #1 
     public const SUFFIX_SIEMPRE=2; // BIT #2 
@@ -128,20 +133,6 @@ class NumeroALetras
                     //if it decimal separator is a point, usually a comma is used as thousand separator
                     if(strpos($number,',')!==false){
                         $thousandSeparator=',';
-                    }else{
-                        //is posible that the number doesn't have a thousand separator(when is a number, not a numeric string)
-                        //so I leave it pass
-                        /*
-                        if (strpos($number, '.')!==false) {
-
-                        }
-                    
-                        if(preg_match("/[0-9]".$decimalSeparator."?[0-9]/",$number)===1){
-                            
-                        }else{
-                            //there is an extra symbol
-                        }
-                        */
                     }
                 }
             }
@@ -168,20 +159,20 @@ class NumeroALetras
         #me aseguro de que el symbolo sea el mismo por eso convierto todo a upper case (por ejemplo usd y USD no machearian sino hago esto)
         $lcurrencySymbol=strlen(self::$currencySymbol);
         $beginning=substr($number,0,$lcurrencySymbol);
-       
+
         #echo $part."\n";
         if(strcasecmp($beginning,self::$currencySymbol)==0){ #this means it has the symbol o money type at the beggining
             $number= trim(substr($number,$lcurrencySymbol,strlen($number)-$lcurrencySymbol));
           #  echo $number."\n";
         }else{
-            
+
            $end=substr($number,strlen($number)-$lcurrencySymbol,$lcurrencySymbol);
            #en algunos locale, el currentSymbol va al final,como "12.345,67 €", por ello considero este escenario
-            
+
            if(strcasecmp($end,self::$currencySymbol)==0){
-               
+
                 $number= trim(substr($number,0,strlen($number)-$lcurrencySymbol));
-               
+
            }
 
         }
@@ -195,7 +186,7 @@ class NumeroALetras
                 if((int)$decNumberStr===0 && $forzarCentimos){
                     $decimales='CERO';
                     $decNumberStr='00';
-                }else{               
+                }else{
                     $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
                     $decCientos = substr($decNumberStrFill, 6);
                     $decimales = self::convertGroup($decCientos);
@@ -210,16 +201,8 @@ class NumeroALetras
             $decimales = 'CERO ';
 
         }
-      #  echo $number."-----------------\n";
-        /*
-        if(0==$number){//si es cero y no tirnen decimales
-            $converted= "CERO ";
-
-
-        }
-        */
         $numberStr = (string) $number;
-        
+
         $menos=''; #contendra la palabra menos en caso de valores negativos
 
         if(strpos($numberStr,self::$minusSymbol)!==false){
@@ -235,7 +218,6 @@ class NumeroALetras
             throw new \InvalidArgumentException(
             "No se puede formatear mas alla de la suma 999999999, valor dado(limpio sin symbolos): {$numberStr}. 
             Si el valor no exede la suma indica, favor de verificar la configuracion de separador decimal y de miles", 1);
-            
         }
         //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
         //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
@@ -258,14 +240,13 @@ class NumeroALetras
             }
         }
         if (intval($cientos) > 0) {
-            
             if ($cientos == '001') {
                 $converted .= 'UN ';
             } else if (intval($cientos) > 0) {
                 $converted .= sprintf('%s', self::convertGroup($cientos));
             }
         }else{ //este es el ultimo cero, y si representa un valor en texto
-            if($cientos=='000'){
+            if($cientos=='000' && self::$disableCeros===false){
                 $converted .= 'CERO ';
             }
         }
