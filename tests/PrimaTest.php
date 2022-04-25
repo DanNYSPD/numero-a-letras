@@ -5,13 +5,9 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Xarenisoft\NumberToWords\Esp\NumeroALetras;
 
-
 final class PrimaTest extends TestCase
 {
 
-   public function setup(): void
-   {
-   }
    public function testIntegerWithourThousandSeparator()
    {
       $number = 12345;
@@ -116,14 +112,14 @@ final class PrimaTest extends TestCase
    /**
     * @expectedException InvalidArgumentException
     *
-    * 
     */
    public function testMismoSeparadorException()
    {
+      $this->expectException(InvalidArgumentException::class);
       NumeroALetras::$currencySymbol = 'MXN';
       NumeroALetras::$decimalSeparator = '.';
       NumeroALetras::$thousandSeparator = '.';
-      $output = NumeroALetras::convertir("-12131321.21 MXN", 'PESOS', 'CENTAVOS');
+      NumeroALetras::convertir("-121.21 MXN", 'PESOS', 'CENTAVOS');
    }
    public function testValorNegativoConSimboloMasDeUnCaracter()
    {
