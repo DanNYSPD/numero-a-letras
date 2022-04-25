@@ -1,15 +1,15 @@
 # Numero A Letras
 
 Convierte un número o cadena numerica a su valor correspondiente en palabras.
-Es un fork de
+Es un fork de xarenisoft/numbertowords-esp
 
 ## Instalación
 
-Agrega `xarenisoft/numbertowords-esp` a tu archivo composer.json.
+Agrega `cognitus/numbertowords-esp` a tu archivo composer.json.
 ```json
     {
         "require": {
-            "xarenisoft/numbertowords-esp": "1.0.0"
+            "cognitus/numbertowords-esp": "2.0.0"
         }
     }
 ```    
