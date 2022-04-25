@@ -1,5 +1,5 @@
 {
-  "name": "xarenisoft/numbertowords-esp",
+  "name": "cognitus/numbertowords-esp",
   "description": "Convierte un número o cadena numerica a su valor correspondiente en palabras.",
   "keywords": ["convertir", "numero", "letras"],
   "homepage": "https://github.com/cognitus/numero-a-letras",
