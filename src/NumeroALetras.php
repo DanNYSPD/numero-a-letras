@@ -240,6 +240,13 @@ class NumeroALetras
         //con str_pad rellenamos los espacios necesarios hasta cumplir los 9 digitos a la izquierda que es hasta centenas de milloes, ejemplo: si number es 1 (uno). rellenamos con 0 hasta los 9 digitos: '000000001'.
         //con esto forzamos a 9 y asi poder extraer siempre los millones, miles y cientos
         $numberStrFill = str_pad($numberStr, 9, '0', STR_PAD_LEFT);
+
+        //validar que el total sea cero: si es cero si debo revolder el texto CERO: sino es que hay miles etc
+        //sino es cero entonces oculto la palabra cero ej mil pesos
+        $isTotalCero = false;
+        if(abs($numberStrFill) == 0){
+            $isTotalCero = true;
+        }
         $millones = substr($numberStrFill, 0, 3);
         $miles = substr($numberStrFill, 3, 3);
         $cientos = substr($numberStrFill, 6);
@@ -266,7 +273,11 @@ class NumeroALetras
             }
         }else{ //este es el ultimo cero, y si representa un valor en texto
             if($cientos=='000'){
-                $converted .= 'CERO ';
+                
+                //si el total es cero y no incluye miles , centimos etc. entonces es cero
+                if($isTotalCero){
+                    $converted .= 'CERO ';
+                }
             }
         }
         if(""===$decimales){
