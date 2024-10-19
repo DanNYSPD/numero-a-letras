@@ -244,7 +244,7 @@ class NumeroALetras
         //validar que el total sea cero: si es cero si debo revolder el texto CERO: sino es que hay miles etc
         //sino es cero entonces oculto la palabra cero ej mil pesos
         $isTotalCero = false;
-        if(abs($numberStrFill) == 0){
+        if(abs((float)$numberStrFill) == 0){
             $isTotalCero = true;
         }
         $millones = substr($numberStrFill, 0, 3);
